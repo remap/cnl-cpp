@@ -27,8 +27,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <unistd.h>
-#include <ndn-cpp/security/key-chain.hpp>
-#include <ndn-cpp/delegation-set.hpp>
+#include <ndn-ind/security/key-chain.hpp>
+#include <ndn-ind/delegation-set.hpp>
 #include <cnl-cpp/generalized-object/generalized-object-stream-handler.hpp>
 
 using namespace std;
@@ -55,7 +55,7 @@ int main(int argc, char** argv)
     KeyChain keyChain;
     face.setCommandSigningInfo(keyChain, keyChain.getDefaultCertificateName());
 
-    Milliseconds publishIntervalMs = 1000.0;
+    chrono::milliseconds publishIntervalMs(1000);
     Namespace stream("/ndn/eb/stream/run/28/annotations", &keyChain);
     GeneralizedObjectStreamHandler handler(&stream);
 
@@ -68,9 +68,9 @@ int main(int argc, char** argv)
 
     // Loop, producing a new object every publishIntervalMs milliseconds (and
     // also calling processEvents()).
-    MillisecondsSince1970 previousPublishMs = 0;
+    chrono::steady_clock::time_point previousPublishMs;
     while (true) {
-      MillisecondsSince1970 now = ndn_getNowMilliseconds();
+      auto now = chrono::steady_clock::now();
       if (now >= previousPublishMs + publishIntervalMs) {
         cout << "Preparing data for sequence " <<
           (handler.getProducedSequenceNumber() + 1) << endl;

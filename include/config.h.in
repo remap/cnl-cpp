@@ -30,11 +30,11 @@
 /* Define to 1 if you have the `log4cxx' library (-llog4cxx). */
 #undef HAVE_LIBLOG4CXX
 
-/* Define to 1 if you have the `ndn-cpp' library (-lndn-cpp). */
-#undef HAVE_LIBNDN_CPP
+/* Define to 1 if you have the `ndn-ind' library (-lndn-ind). */
+#undef HAVE_LIBNDN_IND
 
-/* Define to 1 if you have the `ndn-cpp-tools' library (-lndn-cpp-tools). */
-#undef HAVE_LIBNDN_CPP_TOOLS
+/* Define to 1 if you have the `ndn-ind-tools' library (-lndn-ind-tools). */
+#undef HAVE_LIBNDN_IND_TOOLS
 
 /* Define to 1 if you have the `protobuf' library (-lprotobuf). */
 #undef HAVE_LIBPROTOBUF
@@ -50,9 +50,6 @@
 
 /* Define to 1 if you have the `memcpy' function. */
 #undef HAVE_MEMCPY
-
-/* Define to 1 if you have the <memory.h> header file. */
-#undef HAVE_MEMORY_H
 
 /* Define to 1 if you have the `memset' function. */
 #undef HAVE_MEMSET
@@ -74,6 +71,9 @@
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdio.h> header file. */
+#undef HAVE_STDIO_H
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
@@ -127,7 +127,9 @@
    your system. */
 #undef PTHREAD_CREATE_JOINABLE
 
-/* Define to 1 if you have the ANSI C header files. */
+/* Define to 1 if all of the C90 standard headers exist (not just the ones
+   required in a freestanding environment). This macro is provided for
+   backward compatibility; new code need not use it. */
 #undef STDC_HEADERS
 
 /* Define for Solaris 2.5.1 so the uint32_t typedef from <sys/synch.h>,

@@ -22,7 +22,7 @@
 #ifndef NDN_PENDING_INCOMING_INTEREST_TABLE_HPP
 #define NDN_PENDING_INCOMING_INTEREST_TABLE_HPP
 
-#include <ndn-cpp/face.hpp>
+#include <ndn-ind/face.hpp>
 
 namespace cnl_cpp {
 
@@ -71,16 +71,16 @@ public:
      * @return True if this Interest is timed out, otherwise false.
      */
     bool
-    isTimedOut(ndn::MillisecondsSince1970 nowMilliseconds)
+    isTimedOut(std::chrono::system_clock::time_point nowTimePoint)
     {
-      return timeoutTimeMilliseconds_ >= 0.0 &&
-             nowMilliseconds >= timeoutTimeMilliseconds_;
+      return timeoutTime_ != std::chrono::system_clock::time_point::min() &&
+             nowTimePoint >= timeoutTime_;
     }
 
   private:
     ndn::ptr_lib::shared_ptr<const ndn::Interest> interest_;
     ndn::Face& face_;
-    ndn::MillisecondsSince1970 timeoutTimeMilliseconds_;
+    std::chrono::system_clock::time_point timeoutTime_;
   };
 
   /**

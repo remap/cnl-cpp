@@ -22,7 +22,7 @@
 #ifndef NDN_CONTENT_META_INFO_OBJECT_HPP
 #define NDN_CONTENT_META_INFO_OBJECT_HPP
 
-#include <ndn-cpp-tools/usersync/content-meta-info.hpp>
+#include <ndn-ind-tools/usersync/content-meta-info.hpp>
 #include "../object.hpp"
 
 namespace cnl_cpp {
@@ -34,7 +34,7 @@ namespace cnl_cpp {
 class ContentMetaInfoObject : public Object {
 public:
   /**
-   * Create a new ContentMetaInfoObject to hold the given contentMetaInfo. 
+   * Create a new ContentMetaInfoObject to hold the given contentMetaInfo.
    * Objects of this type are created internally by the library, so your
    * application normally does not call this constructor.
    * @param contentMetaInfo The ContentMetaInfo object, which is copied.
@@ -64,7 +64,7 @@ public:
    * @return The time stamp as milliseconds since Jan 1, 1970 UTC. If not
    * specified, return -1.
    */
-  ndn::MillisecondsSince1970
+  std::chrono::system_clock::time_point
   getTimestamp() const { return contentMetaInfo_.getTimestamp(); }
 
   /**
@@ -98,7 +98,7 @@ public:
    * @return The ContentMetaInfo so that you can chain calls to update values.
    */
   ndntools::ContentMetaInfo&
-  setTimestamp(ndn::MillisecondsSince1970 timestamp)
+  setTimestamp(std::chrono::system_clock::time_point timestamp)
   {
     return contentMetaInfo_.setTimestamp(timestamp);
   }

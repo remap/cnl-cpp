@@ -19,8 +19,8 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp/delegation-set.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind/delegation-set.hpp>
 #include <cnl-cpp/generalized-object/generalized-object-stream-handler.hpp>
 
 using namespace std;
@@ -38,7 +38,7 @@ GeneralizedObjectStreamHandler::Impl::Impl
 : pipelineSize_(pipelineSize),
   onSequencedGeneralizedObject_(onSequencedGeneralizedObject), namespace_(0),
   latestNamespace_(0), producedSequenceNumber_(-1),
-  latestPacketFreshnessPeriod_(1000.0), nRequestedSequenceNumbers_(0),
+  latestPacketFreshnessPeriod_(chrono::seconds(1)), nRequestedSequenceNumbers_(0),
   maxRequestedSequenceNumber_(0), nReportedSequenceNumbers_(0),
   maxReportedSequenceNumber_(-1)
 {
@@ -208,9 +208,9 @@ GeneralizedObjectStreamHandler::Impl::onStateChanged
 
   if (pipelineSize_ == 0) {
     // Schedule to fetch the next _latest packet.
-    Milliseconds freshnessPeriod =
+    chrono::nanoseconds freshnessPeriod =
       changedNamespace.getData()->getMetaInfo().getFreshnessPeriod();
-    if (freshnessPeriod < 0)
+    if (freshnessPeriod.count() < 0)
       // No freshness period. We don't expect this.
       return;
     latestNamespace_->getFace_()->callLater
@@ -248,7 +248,7 @@ GeneralizedObjectStreamHandler::Impl::requestNewSequenceNumbers()
 {
   ptr_lib::shared_ptr<vector<Name::Component>> childComponents =
     namespace_->getChildComponents();
-  int nOutstandingSequenceNumbers = 
+  int nOutstandingSequenceNumbers =
     nRequestedSequenceNumbers_ - nReportedSequenceNumbers_;
 
   // Now find unrequested sequence numbers and request.

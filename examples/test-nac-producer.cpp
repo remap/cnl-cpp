@@ -26,10 +26,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <unistd.h>
-#include <ndn-cpp/security/key-chain.hpp>
-#include <ndn-cpp/security/validator-null.hpp>
-#include <ndn-cpp/encrypt/encryptor-v2.hpp>
-#include <ndn-cpp/encrypt/access-manager-v2.hpp>
+#include <ndn-ind/security/key-chain.hpp>
+#include <ndn-ind/security/validator-null.hpp>
+#include <ndn-ind/encrypt/encryptor-v2.hpp>
+#include <ndn-ind/encrypt/access-manager-v2.hpp>
 #include <cnl-cpp/namespace.hpp>
 
 using namespace std;

@@ -76,12 +76,12 @@ AX_BOOST_ASIO
 AC_CHECK_LIB([crypto], [EVP_EncryptInit], [],
              [AC_MSG_FAILURE([can't find openssl crypto lib])])
 
-# Require libndn-cpp.
-AC_CHECK_LIB([ndn-cpp], [ndn_getErrorString], [],
+# Require libndn-ind.
+AC_CHECK_LIB([ndn-ind], [ndn_getErrorString], [],
              [AC_MSG_FAILURE([can't find the ndn-cpp library])])
 
-# Optionally link to libndn-cpp-tools.
-AC_CHECK_LIB([ndn-cpp-tools], [ndntools_getGeneralizedContentMetaComponent], [], [])
+# Optionally link to libndn-ind-tools.
+AC_CHECK_LIB([ndn-ind-tools], [ndntools_getGeneralizedContentMetaComponent], [], [])
 
 # Conditionally use libsqlite3.  AX_LIB_SQLITE3 defines HAVE_SQLITE3 in confdefs.h .
 AX_LIB_SQLITE3()
