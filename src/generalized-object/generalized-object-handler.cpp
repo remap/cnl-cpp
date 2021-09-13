@@ -21,8 +21,8 @@
 
 #include <memory.h>
 #include <stdexcept>
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp-tools/usersync/content-meta-info.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind-tools/usersync/content-meta-info.hpp>
 #include <cnl-cpp/generalized-object/generalized-object-handler.hpp>
 
 using namespace std;
@@ -66,7 +66,7 @@ GeneralizedObjectHandler::Impl::setObject
   // Prepare the _meta packet.
   ContentMetaInfo contentMetaInfo;
   contentMetaInfo.setContentType(contentType);
-  contentMetaInfo.setTimestamp(ndn_getNowMilliseconds());
+  contentMetaInfo.setTimestamp(chrono::system_clock::now());
   contentMetaInfo.setHasSegments(hasSegments);
 
   if (!hasSegments)

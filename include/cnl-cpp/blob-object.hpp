@@ -22,7 +22,7 @@
 #ifndef NDN_BLOB_OBJECT_HPP
 #define NDN_BLOB_OBJECT_HPP
 
-#include <ndn-cpp/util/blob.hpp>
+#include <ndn-ind/util/blob.hpp>
 #include "object.hpp"
 
 namespace cnl_cpp {

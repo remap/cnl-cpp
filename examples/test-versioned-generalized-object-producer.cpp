@@ -28,7 +28,7 @@
 #include <ctime>
 #include <iostream>
 #include <unistd.h>
-#include <ndn-cpp/security/key-chain.hpp>
+#include <ndn-ind/security/key-chain.hpp>
 #include <cnl-cpp/generalized-object/generalized-object-handler.hpp>
 
 using namespace std;
@@ -58,7 +58,7 @@ int main(int argc, char** argv)
     GeneralizedObjectHandler handler;
     // Each generalized object will have a 1000 millisecond freshness period.
     MetaInfo metaInfo;
-    metaInfo.setFreshnessPeriod(1000);
+    metaInfo.setFreshnessPeriod(chrono::milliseconds(1000));
 
     // This is called when the library receives an Interest which is not
     // satisfied by Data already in the Namespace tree.
@@ -76,7 +76,7 @@ int main(int argc, char** argv)
       cout << "Producing the generalized object for " << versionNamespace.getName() << endl;
       time_t t = time(0);
       handler.setObject
-        (versionNamespace, 
+        (versionNamespace,
          Blob::fromRawStr(string("Status as of ") + asctime(localtime(&t))),
          "text/html");
       return true;

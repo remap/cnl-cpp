@@ -132,7 +132,7 @@ public:
    * Get the freshness period to use for the produced _latest data packet.
    * @return The freshness period in milliseconds.
    */
-  ndn::Milliseconds
+  std::chrono::nanoseconds
   getLatestPacketFreshnessPeriod() { return impl_->getLatestPacketFreshnessPeriod(); }
 
   /**
@@ -140,7 +140,7 @@ public:
    * @param latestPacketFreshnessPeriod The freshness period in milliseconds.
    */
   void
-  setLatestPacketFreshnessPeriod(ndn::Milliseconds latestPacketFreshnessPeriod)
+  setLatestPacketFreshnessPeriod(std::chrono::nanoseconds latestPacketFreshnessPeriod)
   {
     impl_->setLatestPacketFreshnessPeriod(latestPacketFreshnessPeriod);
   }
@@ -217,11 +217,11 @@ private:
     int
     getProducedSequenceNumber() { return producedSequenceNumber_; }
 
-    ndn::Milliseconds
+    std::chrono::nanoseconds
     getLatestPacketFreshnessPeriod() { return latestPacketFreshnessPeriod_; }
 
     void
-    setLatestPacketFreshnessPeriod(ndn::Milliseconds latestPacketFreshnessPeriod)
+    setLatestPacketFreshnessPeriod(std::chrono::nanoseconds latestPacketFreshnessPeriod)
     {
       latestPacketFreshnessPeriod_ = latestPacketFreshnessPeriod;
     }
@@ -253,7 +253,7 @@ private:
     /**
      * This is called for object needed at the Handler's namespace. If
      * neededNamespace is the Handler's Namespace (called by the appliction),
-     * then fetch the _latest packet. If neededNamespace is for the _latest 
+     * then fetch the _latest packet. If neededNamespace is for the _latest
      * packet (from an incoming Interest), produce the _latest packet for the
      * current sequence number.
      */
@@ -291,7 +291,7 @@ private:
     Namespace* latestNamespace_;
     int producedSequenceNumber_;
     int pipelineSize_;
-    ndn::Milliseconds latestPacketFreshnessPeriod_;
+    std::chrono::nanoseconds latestPacketFreshnessPeriod_;
     GeneralizedObjectHandler generalizedObjectHandler_;
     int nRequestedSequenceNumbers_;
     int maxRequestedSequenceNumber_;

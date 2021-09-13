@@ -20,8 +20,8 @@
  */
 
 #include <sstream>
-#include <ndn-cpp/util/exponential-re-express.hpp>
-#include <ndn-cpp/util/logging.hpp>
+#include <ndn-ind/util/exponential-re-express.hpp>
+#include <ndn-ind/util/logging.hpp>
 #include "impl/pending-incoming-interest-table.hpp"
 #include <cnl-cpp/namespace.hpp>
 
@@ -72,8 +72,9 @@ Namespace::Impl::Impl
    const ndn::ptr_lib::shared_ptr<bool>& isShutDown)
 : outerNamespace_(outerNamespace), name_(name), keyChain_(keyChain), parent_(0),
   root_(this), state_(NamespaceState_NAME_EXISTS),
-  validateState_(NamespaceValidateState_WAITING_FOR_DATA), 
-  freshnessExpiryTimeMilliseconds_(-1.0), face_(0), decryptor_(0),
+  validateState_(NamespaceValidateState_WAITING_FOR_DATA),
+  freshnessExpiryTime_(chrono::system_clock::time_point::min()),
+  face_(0), decryptor_(0),
   maxInterestLifetime_(-1), syncDepth_(-1), registeredPrefixId_(0),
   isShutDown_(isShutDown)
 {
@@ -91,7 +92,7 @@ Namespace::Impl::getParent()
 
 Namespace*
 Namespace::Impl::getRoot()
-{ 
+{
   if (getIsShutDown())
     throw runtime_error
       ("Cannot get the root of this Namespace node because it is shut down");
@@ -234,12 +235,13 @@ Namespace::Impl::setData(const ptr_lib::shared_ptr<Data>& data)
     // Quickly send the Data packet to satisfy interest, before calling callbacks.
     root_->pendingIncomingInterestTable_->satisfyInterests(*data);
 
-  if (data->getMetaInfo().getFreshnessPeriod() >= 0.0)
-    freshnessExpiryTimeMilliseconds_ =
-      ndn_getNowMilliseconds() + data->getMetaInfo().getFreshnessPeriod();
+  if (data->getMetaInfo().getFreshnessPeriod().count() >= 0.0)
+    freshnessExpiryTime_ =
+      chrono::system_clock::now() +
+        chrono::duration_cast<chrono::milliseconds>(data->getMetaInfo().getFreshnessPeriod());
   else
     // Does not expire.
-    freshnessExpiryTimeMilliseconds_ = -1.0;
+    freshnessExpiryTime_ = chrono::system_clock::time_point::min();
   data_ = data;
 
   return true;
@@ -335,7 +337,8 @@ Namespace::Impl::enableSync(int depth)
     root_->fullPSync_ = ptr_lib::make_shared<FullPSync2017>
       (275, *face, Name("/CNL-sync"),
        bind(&Namespace::Impl::onNamesUpdate, shared_from_this(), _1),
-       *getKeyChain_(), 1600, 1600);
+       *getKeyChain_(),
+       chrono::milliseconds(1600), chrono::milliseconds(1600));
   }
 
   syncDepth_ = depth;
@@ -355,7 +358,7 @@ Namespace::Impl::objectNeeded(bool mustBeFresh)
   interest.setMustBeFresh(mustBeFresh);
   // Debug: This requires a Data packet. Check for an object without one?
   Namespace::Impl* bestMatch = findBestMatchName
-    (*this, interest, ndn_getNowMilliseconds());
+    (*this, interest, chrono::system_clock::now());
   if (bestMatch && bestMatch->object_) {
     // Set the state again to fire the callbacks.
     bestMatch->setState(NamespaceState_OBJECT_READY);
@@ -482,7 +485,7 @@ Namespace::Impl::getSyncNode()
   return 0;
 }
 
-Milliseconds
+std::chrono::nanoseconds
 Namespace::Impl::getMaxInterestLifetime()
 {
   if (getIsShutDown())
@@ -491,13 +494,13 @@ Namespace::Impl::getMaxInterestLifetime()
 
   Namespace::Impl* impl = this;
   while (impl) {
-    if (impl->maxInterestLifetime_ >= 0)
+    if (impl->maxInterestLifetime_.count() >= 0)
       return impl->maxInterestLifetime_;
     impl =impl->parent_;
   }
 
   // Return the default.
-  return 16000.0;
+  return std::chrono::nanoseconds(-1);
 }
 
 const MetaInfo*
@@ -584,7 +587,7 @@ Namespace::Impl::createChild(const Name::Component& component, bool fireCallback
 
   if (fireCallbacks) {
     child->impl_->setState(NamespaceState_NAME_EXISTS);
-    
+
     // Sync this name under the same conditions that we report a NAME_EXISTS.
     if (root_->fullPSync_) {
       Namespace::Impl* syncNode = child->impl_->getSyncNode();
@@ -813,7 +816,7 @@ Namespace::Impl::onInterest
   Namespace::Impl& interestNamespaceImpl = getChildImpl(interestName);
   if (hasChild(interestName)) {
     Namespace::Impl* bestMatch = findBestMatchName
-      (interestNamespaceImpl, *interest, ndn_getNowMilliseconds());
+      (interestNamespaceImpl, *interest, chrono::system_clock::now());
     if (bestMatch) {
       // findBestMatchName makes sure there is a data_ packet.
       face.putData(*bestMatch->data_);
@@ -839,7 +842,7 @@ Namespace::Impl::onInterest
 Namespace::Impl*
 Namespace::Impl::findBestMatchName
   (Namespace::Impl& nameSpace, const Interest& interest,
-   MillisecondsSince1970 nowMilliseconds)
+   chrono::system_clock::time_point nowTimePoint)
 {
   Namespace::Impl *bestMatch = 0;
 
@@ -850,7 +853,7 @@ Namespace::Impl::findBestMatchName
        i != nameSpace.children_.rend(); ++i) {
     Namespace::Impl& child = *i->second->impl_;
     Namespace::Impl* childBestMatch = findBestMatchName
-      (child, interest, nowMilliseconds);
+      (child, interest, nowTimePoint);
 
     if (childBestMatch &&
         (!bestMatch ||
@@ -863,8 +866,8 @@ Namespace::Impl::findBestMatchName
     return bestMatch;
 
   if (interest.getMustBeFresh() &&
-      nameSpace.freshnessExpiryTimeMilliseconds_ >= 0 &&
-      nowMilliseconds >= nameSpace.freshnessExpiryTimeMilliseconds_)
+      nameSpace.freshnessExpiryTime_ != chrono::system_clock::time_point::min() &&
+      nowTimePoint >= nameSpace.freshnessExpiryTime_)
     // The Data packet is no longer fresh.
     // Debug: When to set the state to OBJECT_READY_BUT_STALE?
     return 0;

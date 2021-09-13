@@ -24,8 +24,8 @@
 #else
 #include <string.h>
 #endif
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp/digest-sha256-signature.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind/digest-sha256-signature.hpp>
 #include <cnl-cpp/segment-stream-handler.hpp>
 
 using namespace std;

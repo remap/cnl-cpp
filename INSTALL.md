@@ -6,20 +6,20 @@ Prerequisites
 (These are prerequisites to build CNL-CPP.  To do development of CNL-CPP code
 and update the build system, see Development Prerequisites.)
 
-* Required: NDN-CPP (https://github.com/named-data/ndn-cpp)
+* Required: NDN-IND (https://github.com/operantnetworks/ndn-ind)
 * Required: libcrypto
-* Optional: libsqlite3 (for key storage in NDN-CPP)
-* Optional: OSX Security framework (for key storage in NDN-CPP)
+* Optional: libsqlite3 (for key storage in NDN-IND)
+* Optional: OSX Security framework (for key storage in NDN-IND)
 * Optional: Protobuf (for generalized objects)
-* Optional: log4cxx (for debugging and log output in this and in NDN-CPP)
+* Optional: log4cxx (for debugging and log output in this and in NDN-IND)
 * Optional: Doxygen (to make documentation)
-* Optional: Boost (min version 1.48) with asio (for ThreadsafeFace and async I/O in NDN-CPP)
+* Optional: Boost (min version 1.48) with asio (for ThreadsafeFace and async I/O in NDN-IND)
 * Optional: zlib (for FullPSync2017)
 
-The steps to install the prerequisites are the same as to build and install NDN-CPP.
-Please see https://github.com/named-data/ndn-cpp/blob/master/INSTALL.md .
+The steps to install the prerequisites are the same as to build and install NDN-IND.
+Please see https://github.com/operantnetworks/ndn-ind/blob/master/INSTALL.md .
 
-[Ubuntu only] After installing NDN-CPP, be sure to update the path to the
+[Ubuntu only] After installing NDN-IND, be sure to update the path to the
 shared libraries using `sudo /sbin/ldconfig` .
 
 Build
@@ -67,8 +67,8 @@ Running make doxygen-doc puts code documentation in doc/html.
 Development Prerequisites
 =========================
 These steps are only needed to do development of CNL-CPP code and update the build system.
-First follow the Prerequisites for your platform to build NDN-CPP.
-https://github.com/named-data/ndn-cpp/blob/master/INSTALL.md
+First follow the Prerequisites for your platform to build NDN-IND.
+https://github.com/operantnetworks/ndn-ind/blob/master/INSTALL.md
 
 ## OS X 10.9, OS X 10.10.2, OS X 10.11, macOS 10.12 and macOS 10.13
 In a terminal, enter:

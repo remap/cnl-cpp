@@ -20,7 +20,7 @@
  */
 
 #include <algorithm>
-#include <ndn-cpp/util/logging.hpp>
+#include <ndn-ind/util/logging.hpp>
 #include "pending-incoming-interest-table.hpp"
 
 INIT_LOGGER("ndn.PendingIncomingInterestTable");
@@ -33,25 +33,27 @@ namespace cnl_cpp {
 PendingIncomingInterestTable::Entry::Entry
   (const ptr_lib::shared_ptr<const Interest>& interest, Face& face)
 : interest_(interest), face_(face)
+, timeoutTime_(std::chrono::system_clock::time_point::min())
 {
-  // Set up timeoutTimeMilliseconds_.
+  // Set up timeoutTime_.
   if (interest_->getInterestLifetimeMilliseconds() >= 0.0)
-    timeoutTimeMilliseconds_ = ndn_getNowMilliseconds() +
-      interest_->getInterestLifetimeMilliseconds();
+    timeoutTime_ = chrono::system_clock::now() +
+        chrono::duration_cast<chrono::milliseconds>(interest_->getInterestLifetime());
   else
     // No timeout.
-    timeoutTimeMilliseconds_ = -1.0;
+    timeoutTime_ = chrono::system_clock::time_point::min();
 }
 
 void
 PendingIncomingInterestTable::satisfyInterests(const Data& data)
 {
-  Milliseconds nowMilliseconds = ndn_getNowMilliseconds();
+
+  chrono::system_clock::time_point nowTime = chrono::system_clock::now();
 
   // Go backwards through the list so we can erase entries.
   for (int i = (int)table_.size() - 1; i >= 0; --i) {
     Entry& pendingInterest = *table_[i];
-    if (pendingInterest.isTimedOut(nowMilliseconds)) {
+    if (pendingInterest.isTimedOut(nowTime)) {
       table_.erase(table_.begin() + i);
       continue;
     }

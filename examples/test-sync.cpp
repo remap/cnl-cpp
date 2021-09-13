@@ -25,7 +25,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <unistd.h>
-#include <ndn-cpp/security/key-chain.hpp>
+#include <ndn-ind/security/key-chain.hpp>
 #include <cnl-cpp/namespace.hpp>
 
 using namespace std;
@@ -138,14 +138,14 @@ int main(int argc, char** argv)
     };
     applicationPrefix.addOnStateChanged(onStateChanged);
 
-    Milliseconds publishIntervalMs = 1000.0;
+    chrono::milliseconds publishIntervalMs(1000);
     Name::Component component = Name("/%00").get(0);
 
     // Loop, producing a new name every publishIntervalMs milliseconds (and also
     // calling processEvents()).
-    MillisecondsSince1970 previousPublishMs = 0;
+    chrono::system_clock::time_point previousPublishMs;
     while (true) {
-      MillisecondsSince1970 now = ndn_getNowMilliseconds();
+      auto now = chrono::system_clock::now();
       if (now >= previousPublishMs + publishIntervalMs) {
         // If userName is "a", this makes /test/app/a/%00, /test/app/a/%01, etc.
         Namespace& newNamespace = userPrefix[component];

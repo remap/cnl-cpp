@@ -23,14 +23,14 @@
 #define CNL_CPP_NAMESPACE_HPP
 
 #include <map>
-#include <ndn-cpp/face.hpp>
+#include <ndn-ind/face.hpp>
 #ifdef NDN_CPP_HAVE_BOOST_ASIO
 #include <boost/atomic.hpp>
 #endif
 
-#include <ndn-cpp/security/v2/validation-error.hpp>
-#include <ndn-cpp/encrypt/decryptor-v2.hpp>
-#include <ndn-cpp/sync/full-psync2017.hpp>
+#include <ndn-ind/security/v2/validation-error.hpp>
+#include <ndn-ind/encrypt/decryptor-v2.hpp>
+#include <ndn-ind/sync/full-psync2017.hpp>
 #include "blob-object.hpp"
 
 namespace cnl_cpp {
@@ -427,7 +427,7 @@ public:
    * method. If you only care if the validate state has changed for this
    * Namespace (and not any of its children) then your callback can check
    * "if &changedNamespace == &namespace". (Note that the validate state given
-   * to the callback may be different than changedNamespace.getValidateState() 
+   * to the callback may be different than changedNamespace.getValidateState()
    * if other processing has changed the validate state before this callback is
    * called.)
    * NOTE: The library will log any exceptions thrown by this callback, but for
@@ -495,7 +495,7 @@ public:
    */
   void
   setFace
-    (ndn::Face* face, 
+    (ndn::Face* face,
      const ndn::OnRegisterFailed& onRegisterFailed = ndn::OnRegisterFailed(),
      const ndn::OnRegisterSuccess& onRegisterSuccess = ndn::OnRegisterSuccess())
   {
@@ -564,11 +564,11 @@ public:
    * Set the maximum lifetime for re-expressed interests to be used when this or
    * a child node calls expressInterest. You can call this on a child node to
    * set a different maximum lifetime. If you don't set this, the default is
-   * 16000 milliseconds.
-   * @param maxInterestLifetime The maximum lifetime in milliseconds.
+   * std::chrono::milliseconds(-1).
+   * @param maxInterestLifetime The maximum lifetime in nanoseconds.
    */
   void
-  setMaxInterestLifetime(ndn::Milliseconds maxInterestLifetime)
+  setMaxInterestLifetime(std::chrono::nanoseconds maxInterestLifetime)
   {
     impl_->setMaxInterestLifetime(maxInterestLifetime);
   }
@@ -591,7 +591,7 @@ public:
   experimentalClear() { impl_->experimentalClear(); }
 
   /**
-   * Set the isShutDown flag for all Namespace nodes, so that no callbacks are 
+   * Set the isShutDown flag for all Namespace nodes, so that no callbacks are
    * processed. If a node also has a Face, then unregister its prefix. You can
    * call shutdown() if your application will keep running but you need to shut
    * down and delete a Namespace. You must call shutdown() on the root node.
@@ -607,7 +607,7 @@ public:
   getIsShutDown() { return impl_->getIsShutDown(); }
 
   /**
-   * Get the next unique callback ID. This uses an atomic_uint64_t to be thread 
+   * Get the next unique callback ID. This uses an atomic_uint64_t to be thread
    * safe. This is an internal method only meant to be called by library
    * classes; the application should not call it.
    * @return The next callback ID.
@@ -641,7 +641,7 @@ public:
    * If an OnDeserializeNeeded callback of this or a parent Namespace node
    * returns true, set the state to DESERIALIZING and wait for the callback to
    * call the given onDeserialized. Otherwise, just call defaultOnDeserialized
-   * immediately, which sets the object and sets the state to OBJECT_READY. This 
+   * immediately, which sets the object and sets the state to OBJECT_READY. This
    * method name has an underscore because is normally only called from a
    * Handler, not from the application.
    * However, if getIsShutDown() then do nothing.
@@ -837,7 +837,7 @@ public:
     objectNeeded(bool mustBeFresh);
 
     void
-    setMaxInterestLifetime(ndn::Milliseconds maxInterestLifetime)
+    setMaxInterestLifetime(std::chrono::nanoseconds maxInterestLifetime)
     {
       maxInterestLifetime_ = maxInterestLifetime;
     }
@@ -869,7 +869,7 @@ public:
 
     void
     deserialize_
-      (const ndn::Blob& blob, 
+      (const ndn::Blob& blob,
        const Handler::OnObjectSet& onObjectSet = Handler::OnObjectSet());
 
     void
@@ -888,7 +888,7 @@ public:
      * @return The maximum Interest lifetime, or the default if not set on this
      * or any parent.
      */
-    ndn::Milliseconds
+    std::chrono::nanoseconds
     getMaxInterestLifetime();
 
     /**
@@ -981,14 +981,14 @@ public:
      * the given Namespace.
      * @param nameSpace This searches this Namespace and its children.
      * @param interest This calls interest.matchesData().
-     * @param nowMilliseconds The current time in milliseconds from
-     * ndn_getNowMilliseconds for checking Data packet freshness.
+     * @param nowTimePoint The current time point for checking Data packet
+     * freshness.
      * @return The Namespace object for the matched name or null if not found.
      */
     static Namespace::Impl*
     findBestMatchName
       (Namespace::Impl& nameSpace, const ndn::Interest& interest,
-       ndn::MillisecondsSince1970 nowMilliseconds);
+       std::chrono::system_clock::time_point nowTimePoint);
 
     void
     onData(const ndn::ptr_lib::shared_ptr<const ndn::Interest>& interest,
@@ -1028,7 +1028,7 @@ public:
     ndn::ptr_lib::shared_ptr<ndn::NetworkNack> networkNack_;
     NamespaceValidateState validateState_;
     ndn::ptr_lib::shared_ptr<ndn::ValidationError> validationError_;
-    ndn::MillisecondsSince1970 freshnessExpiryTimeMilliseconds_;
+    std::chrono::system_clock::time_point freshnessExpiryTime_;
     ndn::ptr_lib::shared_ptr<ndn::Data> data_;
     ndn::ptr_lib::shared_ptr<Object> object_;
     ndn::Face* face_;
@@ -1051,7 +1051,7 @@ public:
       pendingIncomingInterestTable_;
     // This will be created in the root Namespace node.
     ndn::ptr_lib::shared_ptr<ndn::FullPSync2017> fullPSync_;
-    ndn::Milliseconds maxInterestLifetime_; // -1 if not specified.
+    std::chrono::nanoseconds maxInterestLifetime_; // -1 if not specified.
     int syncDepth_; // -1 if not specified.
     ndn::ptr_lib::shared_ptr<bool> isShutDown_;
   };

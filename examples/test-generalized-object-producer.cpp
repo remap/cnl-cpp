@@ -26,7 +26,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <unistd.h>
-#include <ndn-cpp/security/key-chain.hpp>
+#include <ndn-ind/security/key-chain.hpp>
 #include <cnl-cpp/generalized-object/generalized-object-handler.hpp>
 
 using namespace std;
