@@ -41,7 +41,7 @@ namespace cnl_cpp {
  * SegmentStreamHandler extends Namespace::Handler and attaches to a Namespace
  * node to fetch and return child segments in order.
  */
-class SegmentStreamHandler : public Namespace::Handler {
+class cnl_cpp_dll SegmentStreamHandler : public Namespace::Handler {
 public:
   typedef ndn::func_lib::function<void(Namespace* segmentNamespace)> OnSegment;
 

@@ -30,7 +30,7 @@ namespace cnl_cpp {
  * SegmentedObjectHandler extends SegmentStreamHandler and assembles the
  * contents of child segments into a single block of memory.
  */
-class SegmentedObjectHandler : public SegmentStreamHandler {
+class cnl_cpp_dll SegmentedObjectHandler : public SegmentStreamHandler {
 public:
   typedef ndn::func_lib::function<void(Namespace& objectNamespace)> OnSegmentedObject;
 

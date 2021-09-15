@@ -33,7 +33,7 @@ namespace cnl_cpp {
  * necessary, assemble the contents of segment packets into a single block of
  * memory.
  */
-class GeneralizedObjectHandler : public Namespace::Handler {
+class cnl_cpp_dll GeneralizedObjectHandler : public Namespace::Handler {
 public:
   typedef ndn::func_lib::function<void
     (const ndn::ptr_lib::shared_ptr<ContentMetaInfoObject>& contentMetaInfo,

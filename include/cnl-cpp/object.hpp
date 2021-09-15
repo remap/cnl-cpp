@@ -22,6 +22,16 @@
 #ifndef NDN_OBJECT_HPP
 #define NDN_OBJECT_HPP
 
+#if defined(_WIN32)
+#ifdef CNL_CPP_EXPORTS
+#define cnl_cpp_dll __declspec(dllexport)
+#else
+#define cnl_cpp_dll __declspec(dllimport)
+#endif
+#else
+#define cnl_cpp_dll
+#endif
+
 namespace cnl_cpp {
 
 /**
@@ -29,7 +39,7 @@ namespace cnl_cpp {
  * This is necessary to provide a virtual destructor for derived classes such as
  * BlobObject.
  */
-class Object {
+class cnl_cpp_dll Object {
 public:
   virtual ~Object();
 };

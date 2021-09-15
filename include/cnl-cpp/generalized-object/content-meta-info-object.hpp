@@ -31,7 +31,7 @@ namespace cnl_cpp {
  * A ContentMetaInfoObject extends Object to hold an ndntools::ContentMetaInfo
  * and provides convenience wrapper access methods the same as ContentMetaInfo.
  */
-class ContentMetaInfoObject : public Object {
+class cnl_cpp_dll ContentMetaInfoObject : public Object {
 public:
   /**
    * Create a new ContentMetaInfoObject to hold the given contentMetaInfo.

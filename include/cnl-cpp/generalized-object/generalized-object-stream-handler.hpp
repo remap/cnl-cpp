@@ -33,7 +33,7 @@ namespace cnl_cpp {
  * However, if the pipelineSize is zero, continually fetch the _latest packet
  * and use its name to fetch the generalized object.
  */
-class GeneralizedObjectStreamHandler : public Namespace::Handler {
+class cnl_cpp_dll GeneralizedObjectStreamHandler : public Namespace::Handler {
 public:
   typedef ndn::func_lib::function<void
     (int sequenceNumber,

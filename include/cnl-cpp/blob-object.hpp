@@ -31,7 +31,7 @@ namespace cnl_cpp {
  * A BlobObject extends Object to hold an ndn::Blob and provides convenience
  * wrapper access methods the same as Blob.
  */
-class BlobObject : public Object {
+class cnl_cpp_dll BlobObject : public Object {
 public:
   /**
    * Create a new BlobObject to hold the given blob. Objects of this type are
