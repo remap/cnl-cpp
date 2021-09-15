@@ -73,7 +73,7 @@ class PendingIncomingInterestTable;
  * Namespace is the main class that represents the name tree and related
  * operations to manage it.
  */
-class Namespace {
+class cnl_cpp_dll Namespace {
 public:
   typedef ndn::func_lib::function<void
     (Namespace& nameSpace, Namespace& changedNamespace,
