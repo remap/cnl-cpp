@@ -93,7 +93,7 @@ public:
   /**
    * Namespace::Handler is a base class for Handler classes.
    */
-  class Handler {
+  class cnl_cpp_dll Handler {
   public:
     typedef ndn::func_lib::function<void
       (const ndn::ptr_lib::shared_ptr<Object>& object)> OnDeserialized;
